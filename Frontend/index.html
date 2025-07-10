@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubuntu Jobs - Fair Hiring, Faster</title>
+    <style>
+        :root {
+            --ubuntu-gold: #FFD700;
+            --sa-green: #007749;
+            --charcoal: #333333;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --accent-red: #e74c3c;
+            --accent-blue: #3498db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--charcoal);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background-color: var(--sa-green);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--sa-green);
+        }
+
+        .logo-tagline {
+            font-size: 14px;
+            color: var(--charcoal);
+            margin-top: 5px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--charcoal);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--sa-green);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--sa-green);
+            color: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        /* Main Content Styles */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 28px;
+            color: var(--sa-green);
+        }
+
+        .view-switcher {
+            display: flex;
+            background-color: var(--white);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .view-switcher button {
+            padding: 8px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .view-switcher button.active {
+            background-color: var(--sa-green);
+            color: var(--white);
+            border-radius: 30px;
+        }
+
+        /* Job Seeker Dashboard */
+        .job-seeker-dashboard {
+            display: none;
+        }
+
+        .job-seeker-dashboard.active {
+            display: block;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .action-card h3 {
+            color: var(--sa-green);
+            margin-bottom: 15px;
+        }
+
+        .action-card p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--sa-green);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #006341;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--sa-green);
+            color: var(--sa-green);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--sa-green);
+            color: var(--white);
+        }
+
+        .job-matches {
+            margin-top: 2rem;
+        }
+
+        .job-matches h2 {
+            margin-bottom: 1rem;
+        }
+
+        .job-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .job-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .job-card .match-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--ubuntu-gold);
+            color: var(--charcoal);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .job-card .bias-checked {
+            display: inline-block;
+            background-color: var(--accent-blue);
+            color: var(--white);
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+
+        .job-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .job-card .company {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .job-card .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .job-card .skill-tag {
+            background-color: var(--light-gray);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* Employer Dashboard */
+        .employer-dashboard {
+            display: none;
+        }
+
+        .employer-dashboard.active {
+            display: block;
+        }
+
+        .post-job-form {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+        }
+
+        .bias-alert {
+            background-color: #fff8e1;
+            border-left: 4px solid var(--ubuntu-gold);
+            padding: 10px 15px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .bias-alert.show {
+            display: block;
+        }
+
+        .candidate-matches {
+            margin-top: 2rem;
+        }
+
+        .candidate-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .candidate-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .candidate-card .top-match {
+            border: 2px solid var(--ubuntu-gold);
+        }
+
+        .candidate-card .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--sa-green);
+            color: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .candidate-card h3 {
+            margin-bottom: 5px;
+        }
+
+        .candidate-card .match-score {
+            color: var(--sa-green);
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .logo-container {
+                margin-bottom: 15px;
+            }
+
+            nav ul {
+                margin-top: 15px;
+            }
+
+            nav ul li {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .job-list, .candidate-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <div class="logo">UJ</div>
+            <div>
+                <div class="logo-text">Ubuntu Jobs</div>
+                <div class="logo-tagline">Fair hiring, faster. No CV needed.</div>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Jobs</a></li>
+                <li><a href="#">Skills Quiz</a></li>
+                <li><a href="#">Feedback</a></li>
+                <li><a href="#">Mentorship</a></li>
+            </ul>
+        </nav>
+        <div class="user-profile">
+            <span>Welcome, Thando</span>
+            <div class="user-avatar">T</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Dashboard</h1>
+            <div class="view-switcher">
+                <button class="view-btn job-seeker-btn active">Job Seeker</button>
+                <button class="view-btn employer-btn">Employer</button>
+            </div>
+        </div>
+
+        <!-- Job Seeker Dashboard -->
+        <div class="job-seeker-dashboard active">
+            <div class="quick-actions">
+                <div class="action-card">
+                    <h3>CV-Free Application</h3>
+                    <p>Tell us about your skills through our simple chat or voice interface - no formal CV needed!</p>
+                    <a href="application.html" class="btn">Start Application</a>
+                </div>
+                <div class="action-card">
+                    <h3>Skills Quiz</h3>
+                    <p>Complete our 5-minute skills challenge to better match with jobs that fit your abilities.</p>
+                    <a href="#" class="btn btn-outline">Take Quiz</a>
+                </div>
+                <div class="action-card">
+                    <h3>Feedback Hub</h3>
+                    <p>See why you weren't selected and get personalized upskilling recommendations.</p>
+                    <a href="#" class="btn btn-outline">View Feedback</a>
+                </div>
+            </div>
+
+            <div class="progress-tracker">
+                <h2>Your Job Search Progress</h2>
+                <p>You've applied to 5 jobs. 3 employers have viewed your profile.</p>
+                <!-- Progress visualization would go here -->
+            </div>
+
+            <div class="job-matches">
+                <h2>Your Top Job Matches</h2>
+                <div class="job-list">
+                    <div class="job-card">
+                        <div class="match-badge">92% Match</div>
+                        <h3>Junior Data Analyst</h3>
+                        <p class="company">Tech Solutions SA</p>
+                        <div class="skills">
+                            <span class="skill-tag">Excel</span>
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">Data Visualization</span>
+                        </div>
+                        <p>Cape Town (Hybrid)</p>
+                        <span class="bias-checked">Bias-Checked</span>
+                        <a href="#" class="btn" style="margin-top: 15px; display: inline-block;">Apply Now</a>
+                    </div>
+                    <div class="job-card">
+                        <div class="match-badge">85% Match</div>
+                        <h3>Customer Support Agent</h3>
+                        <p class="company">Mobile Networks Ltd</p>
+                        <div class="skills">
+                            <span class="skill-tag">Communication</span>
+                            <span class="skill-tag">Problem Solving</span>
+                            <span class="skill-tag">Zulu/Xhosa</span>
+                        </div>
+                        <p>Johannesburg (Remote)</p>
+                        <span class="bias-checked">Bias-Checked</span>
+                        <a href="#" class="btn" style="margin-top: 15px; display: inline-block;">Apply Now</a>
+                    </div>
+                    <div class="job-card">
+                        <div class="match-badge">78% Match</div>
+                        <h3>Retail Assistant</h3>
+                        <p class="company">Fashion Forward</p>
+                        <div class="skills">
+                            <span class="skill-tag">Customer Service</span>
+                            <span class="skill-tag">Cash Handling</span>
+                            <span class="skill-tag">Teamwork</span>
+                        </div>
+                        <p>Durban (On-site)</p>
+                        <a href="#" class="btn" style="margin-top: 15px; display: inline-block;">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employer Dashboard -->
+        <div class="employer-dashboard">
+            <div class="post-job-form">
+                <h2>Post a New Job</h2>
+                <div class="form-group">
+                    <label for="job-title">Job Title</label>
+                    <input type="text" id="job-title" placeholder="e.g. Junior Software Developer">
+                </div>
+                <div class="form-group">
+                    <label for="job-description">Job Description</label>
+                    <textarea id="job-description" placeholder="Describe the role and required skills..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="job-location">Location</label>
+                    <input type="text" id="job-location" placeholder="e.g. Cape Town, Remote">
+                </div>
+                <div class="bias-alert" id="bias-alert">
+                    <strong>Bias Alert:</strong> We detected language that might exclude qualified candidates. Consider changing "5 years experience" to "demonstrated skills in..."
+                </div>
+                <button class="btn" id="check-bias-btn">Check for Bias</button>
+                <button class="btn" style="margin-left: 10px;">Post Job</button>
+            </div>
+
+            <div class="candidate-matches">
+                <h2>Your Candidate Matches</h2>
+                <div class="candidate-list">
+                    <div class="candidate-card top-match">
+                        <div class="avatar">AM</div>
+                        <h3>Anele Mkhize</h3>
+                        <div class="match-score">94% Match</div>
+                        <div class="skills">
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">UI Design</span>
+                        </div>
+                        <a href="#" class="btn" style="margin-top: 15px; display: inline-block;">View Profile</a>
+                    </div>
+                    <div class="candidate-card">
+                        <div class="avatar">TB</div>
+                        <h3>Thabo Banda</h3>
+                        <div class="match-score">88% Match</div>
+                        <div class="skills">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">Data Analysis</span>
+                            <span class="skill-tag">SQL</span>
+                        </div>
+                        <a href="#" class="btn" style="margin-top: 15px; display: inline-block;">View Profile</a>
+                    </div>
+                    <div class="candidate-card">
+                        <div class="avatar">NM</div>
+                        <h3>Nosipho Mthembu</h3>
+                        <div class="match-score">82% Match</div>
+                        <div class="skills">
+                            <span class="skill-tag">Customer Service</span>
+                            <span class="skill-tag">Zulu</span>
+                            <span class="skill-tag">Sales</span>
+                        </div>
+                        <a href="#" class="btn" style="margin-top: 15px; display: inline-block;">View Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // View Switcher Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const jobSeekerBtn = document.querySelector('.job-seeker-btn');
+            const employerBtn = document.querySelector('.employer-btn');
+            const jobSeekerDashboard = document.querySelector('.job-seeker-dashboard');
+            const employerDashboard = document.querySelector('.employer-dashboard');
+            const checkBiasBtn = document.getElementById('check-bias-btn');
+            const biasAlert = document.getElementById('bias-alert');
+
+            // Switch between job seeker and employer views
+            jobSeekerBtn.addEventListener('click', function() {
+                jobSeekerBtn.classList.add('active');
+                employerBtn.classList.remove('active');
+                jobSeekerDashboard.classList.add('active');
+                employerDashboard.classList.remove('active');
+            });
+
+            employerBtn.addEventListener('click', function() {
+                employerBtn.classList.add('active');
+                jobSeekerBtn.classList.remove('active');
+                employerDashboard.classList.add('active');
+                jobSeekerDashboard.classList.remove('active');
+            });
+
+            // Bias checker simulation
+            checkBiasBtn.addEventListener('click', function() {
+                // In a real app, this would analyze the job description text
+                biasAlert.classList.add('show');
+            });
+
+            // Simulate job application
+            const applyButtons = document.querySelectorAll('.job-card .btn');
+            applyButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Application started via our CV-free process! A chatbot will guide you through the next steps.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
