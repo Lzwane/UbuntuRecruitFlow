@@ -1,0 +1,46 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# VS Code settings (optional)
+.vscode/
+
+# PyCharm settings (optional)
+.idea/
+
+# Python egg metadata
+*.egg-info/
+dist/
+build/
+
+# dotenv environment files
+.env
+.env.*
+
+# SQLite DB (if using)
+*.sqlite3
+
+# Logs
+*.log
+
+# MacOS and Linux system files
+.DS_Store
+Thumbs.db
+
+# pytest cache
+.pytest_cache/
+
+# mypy, coverage, etc.
+.mypy_cache/
+.coverage
+htmlcov/
