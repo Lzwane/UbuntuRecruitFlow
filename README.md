@@ -23,7 +23,7 @@ Using **Cohere**, each candidate receives a response on how well their CV aligns
 ## 🛠️ Tech Stack
 
 - **Frontend:** HTML / CSS / JavaScript  
-  *(or any modern web framework like React or Vue)*
+ 
 
 - **Backend:** Python (FastAPI)
 
