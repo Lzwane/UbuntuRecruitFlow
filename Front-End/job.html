@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post New Job | Ubuntu RecruitFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --primary-light: #d5f5e3;
+            --text: #333;
+            --text-light: #666;
+            --bg: #ffffff;
+            --card-bg: #f9f9f9;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            
+            --sidebar-width: 280px;
+            --sidebar-bg: #2c3e50;
+            --sidebar-text: #ecf0f1;
+            --topbar-height: 70px;
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --primary-light: #1e3b2a;
+            --text: #ecf0f1;
+            --text-light: #bdc3c7;
+            --bg: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --border: #444;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            
+            --sidebar-bg: #1e272e;
+            --sidebar-text: #ecf0f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo i {
+            color: var(--primary);
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-title {
+            padding: 0 20px 10px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid var(--primary);
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: auto;
+        }
+
+        .sidebar-collapse {
+            display: none;
+            position: absolute;
+            right: 15px;
+            top: 22px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+        }
+
+        /* Topbar */
+        .topbar {
+            height: var(--topbar-height);
+            background: var(--bg);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-toggle {
+            font-size: 1.2rem;
+            margin-right: 20px;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .topbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        /* Content Area */
+        .content-wrapper {
+            padding: 30px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+        }
+
+        .welcome-message {
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        /* Job Posting Form */
+        .job-posting-form {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background: var(--bg);
+            color: var(--text);
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23666666' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: var(--primary-dark);
+        }
+
+        .modal-content pre {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+            white-space: pre-wrap;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar-collapse {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar-right {
+                gap: 10px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 20px 15px;
+            }
+
+            .job-posting-form {
+                padding: 20px;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-hands-helping"></i>
+                    <span>RecruitFlow</span>
+                </div>
+                <div class="sidebar-collapse" id="sidebarCollapse">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <div class="menu-title">Main</div>
+                <a href="employer.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="job.html" class="menu-item active">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Post New Job</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Tools</span>
+                </a>
+                
+                <div class="menu-title">Recruitment</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Active Jobs</span>
+                    <span class="badge">8</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>Candidates</span>
+                    <span class="badge">42</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Interviews</span>
+                    <span class="badge">15</span>
+                </a>
+                
+                <div class="menu-title">Company</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-building"></i>
+                    <span>Company Profile</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Topbar -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <div class="sidebar-toggle" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search candidates, jobs...">
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-profile">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar">
+                        <span class="user-name">Smith N.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-wrapper">
+                <div class="content-header">
+                    <div>
+                        <h1 class="content-title">Create Job Description</h1>
+                        <p class="welcome-message">Fill out the form below to generate a professional job description</p>
+                    </div>
+                </div>
+
+                <!-- Job Posting Form -->
+                <div class="job-posting-form">
+                    <form id="jobForm">
+                        <div class="form-grid">
+                            <!-- Basic Information -->
+                            <div class="form-section">
+                                <h3 class="section-title">Basic Information</h3>
+                                <div class="form-group">
+                                    <label for="job_title" class="form-label">Job Title *</label>
+                                    <input type="text" id="job_title" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="work_type" class="form-label">Work Type *</label>
+                                    <select id="work_type" class="form-control" required>
+                                        <option value="Full-time">Full-time</option>
+                                        <option value="Part-time">Part-time</option>
+                                        <option value="Remote">Remote</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="location" class="form-label">Location *</label>
+                                    <input type="text" id="location" class="form-control" value="Pretoria" required>
+                                </div>
+                            </div>
+
+                            <!-- Experience -->
+                            <div class="form-section">
+                                <h3 class="section-title">Experience Requirements</h3>
+                                <div class="form-group">
+                                    <label for="min_experience_years" class="form-label">Min Experience (Years) *</label>
+                                    <input type="number" id="min_experience_years" class="form-control" value="2" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="max_experience_years" class="form-label">Max Experience (Years) *</label>
+                                    <input type="number" id="max_experience_years" class="form-control" value="5" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Role Summary -->
+                        <div class="form-section">
+                            <h3 class="section-title">Role Summary *</h3>
+                            <div class="form-group">
+                                <textarea id="role_summary" class="form-control" required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Responsibilities -->
+                        <div class="form-section">
+                            <h3 class="section-title">Key Responsibilities *</h3>
+                            <div class="form-group">
+                                <textarea id="key_responsibilities" class="form-control" required>["Lead development", "Manage team"]</textarea>
+                                <p class="hint-text">Enter as JSON array (e.g., ["Task 1", "Task 2"])</p>
+                            </div>
+                        </div>
+
+                        <!-- Skills -->
+                        <div class="form-section">
+                            <h3 class="section-title">Skills</h3>
+                            <div class="form-group">
+                                <label for="required_skills" class="form-label">Required Skills *</label>
+                                <textarea id="required_skills" class="form-control" required>["Python", "Leadership"]</textarea>
+                                <p class="hint-text">Enter as JSON array (e.g., ["Skill 1", "Skill 2"])</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="preferred_skills" class="form-label">Preferred Skills (Optional)</label>
+                                <textarea id="preferred_skills" class="form-control">["AWS", "React"]</textarea>
+                                <p class="hint-text">Enter as JSON array (e.g., ["Skill 1", "Skill 2"])</p>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-magic"></i> Generate Job Description
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <h3>Preview Job Description</h3>
+            <pre id="jobPreview"></pre>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="saveJob()">
+                    <i class="fas fa-save"></i> Save Job
+                </button>
+                <button class="btn btn-outline" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle Sidebar
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarCollapse = document.getElementById('sidebarCollapse');
+            
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.add('active');
+            });
+            
+            sidebarCollapse.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+            });
+            
+            // Toggle Theme
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+
+            let generatedData = null;
+
+            // Parse JSON input with error handling
+            const parseJSON = (id) => {
+                try {
+                    return JSON.parse(document.getElementById(id).value);
+                } catch (err) {
+                    showAlert(`Invalid JSON format in ${id.replace('_', ' ')} field`, 'error');
+                    throw err;
+                }
+            };
+
+            // Form submission
+            document.getElementById("jobForm").addEventListener("submit", async function(e) {
+                e.preventDefault();
+                
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                
+                try {
+                    const inputData = {
+                        job_title: document.getElementById("job_title").value,
+                        role_summary: document.getElementById("role_summary").value,
+                        key_responsibilities: parseJSON("key_responsibilities"),
+                        required_skills: parseJSON("required_skills"),
+                        preferred_skills: parseJSON("preferred_skills"),
+                        min_experience_years: parseInt(document.getElementById("min_experience_years").value),
+                        max_experience_years: parseInt(document.getElementById("max_experience_years").value),
+                        location: document.getElementById("location").value,
+                        work_type: document.getElementById("work_type").value
+                    };
+
+                    // Simulate API call (replace with actual fetch in production)
+                    
+                    const res = await fetch("http://127.0.0.1:8000/generate-jd", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(inputData)
+                    });
+                    // const result = await res.json();
+                    
+                    
+                    // Simulated response for demo
+                    // const res = { ok: true };
+                    const result = {
+                        job_title: inputData.job_title,
+                        location: inputData.location,
+                        work_type: inputData.work_type,
+                        generated_description: `Job Title: ${inputData.job_title}\n\nLocation: ${inputData.location}\nWork Type: ${inputData.work_type}\n\nRole Summary:\n${inputData.role_summary}\n\nKey Responsibilities:\n- ${inputData.key_responsibilities.join('\n- ')}\n\nRequired Skills:\n- ${inputData.required_skills.join('\n- ')}\n\nPreferred Skills:\n- ${inputData.preferred_skills.join('\n- ')}\n\nExperience Required: ${inputData.min_experience_years}-${inputData.max_experience_years} years`
+                    };
+
+                    if (res.ok) {
+                        generatedData = result; // store it for saving later
+                        document.getElementById("jobPreview").textContent = result.generated_description;
+                        document.getElementById("previewModal").style.display = "flex";
+                    } else {
+                        showAlert("❌ Error generating description: " + result.detail, 'error');
+                    }
+                } catch (err) {
+                    console.error("Error:", err);
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                }
+            });
+
+            // Close modal
+            function closeModal() {
+                document.getElementById("previewModal").style.display = "none";
+            }
+
+            // Save job function
+            async function saveJob() {
+                if (!generatedData) return;
+                
+                const saveBtn = document.querySelector('#previewModal .btn-primary');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                
+                try {
+                    const jobSaveData = {
+                        job_title: generatedData.job_title,
+                        location: generatedData.location,
+                        work_type: generatedData.work_type,
+                        generated_description: generatedData.generated_description,
+                        user_id: 1 // <-- Update this dynamically if needed
+                    };
+
+                    // Simulate API call (replace with actual fetch in production)
+                    
+                    const res = await fetch("http://127.0.0.1:8000/jobs", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(jobSaveData)
+                    });
+                    
+                    
+                    // Simulated success response
+                    // const res = { ok: true };
+
+                    if (res.ok) {
+                        showAlert("✅ Job saved successfully!", 'success');
+                        closeModal();
+                        document.getElementById("jobForm").reset();
+                    } else {
+                        const error = await res.json();
+                        showAlert("❌ Failed to save job: " + JSON.stringify(error), 'error');
+                    }
+                } catch (err) {
+                    console.error("Error:", err);
+                    showAlert("❌ An error occurred while saving", 'error');
+                } finally {
+                    saveBtn.innerHTML = originalText;
+                }
+            }
+
+            // Show alert function
+            function showAlert(message, type) {
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.innerHTML = `
+                    <span>${message}</span>
+                    <button class="close-btn">&times;</button>
+                `;
+                
+                alert.style.position = 'fixed';
+                alert.style.bottom = '20px';
+                alert.style.right = '20px';
+                alert.style.padding = '15px 20px';
+                alert.style.background = type === 'error' ? '#ff4444' : type === 'success' ? '#00C851' : '#33b5e5';
+                alert.style.color = 'white';
+                alert.style.borderRadius = '5px';
+                alert.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
+                alert.style.zIndex = '1000';
+                alert.style.display = 'flex';
+                alert.style.alignItems = 'center';
+                alert.style.gap = '15px';
+                alert.style.animation = 'fadeIn 0.3s ease';
+                
+                document.body.appendChild(alert);
+                
+                // Close button
+                alert.querySelector('.close-btn').addEventListener('click', () => {
+                    alert.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => alert.remove(), 300);
+                });
+                
+                // Auto-close
+                setTimeout(() => {
+                    alert.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => alert.remove(), 300);
+                }, 5000);
+            }
+            
+            // Add some CSS for animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: translateY(0); }
+                    to { opacity: 0; transform: translateY(20px); }
+                }
+                .close-btn {
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    padding: 0;
+                    margin-left: 10px;
+                }
+                .hint-text {
+                    font-size: 0.8rem;
+                    color: var(--text-light);
+                    margin-top: 5px;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Responsive adjustments
+            function handleResize() {
+                if (window.innerWidth > 992) {
+                    sidebar.classList.remove('active');
+                }
+            }
+            
+            window.addEventListener('resize', handleResize);
+        });
+    </script>
+</body>
+</html>

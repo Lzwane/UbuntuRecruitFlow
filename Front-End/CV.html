@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI CV Generator | Ubuntu RecruitFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --primary-light: #d5f5e3;
+            --text: #333;
+            --text-light: #666;
+            --bg: #ffffff;
+            --card-bg: #f9f9f9;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            
+            --nav-width: 80px;
+            --nav-expanded-width: 220px;
+            --topbar-height: 70px;
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --primary-light: #1e3b2a;
+            --text: #ecf0f1;
+            --text-light: #bdc3c7;
+            --bg: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --border: #444;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        /* Modern Vertical Navigation */
+        .modern-nav {
+            width: var(--nav-width);
+            background: linear-gradient(180deg, var(--primary-dark), var(--primary));
+            color: white;
+            height: 100vh;
+            position: fixed;
+            transition: var(--transition);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            overflow: hidden;
+        }
+
+        .modern-nav:hover {
+            width: var(--nav-expanded-width);
+            align-items: flex-start;
+            padding-left: 20px;
+        }
+
+        .nav-logo {
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-logo-icon {
+            font-size: 28px;
+            min-width: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease 0.1s;
+        }
+
+        .modern-nav:hover .nav-logo-text {
+            opacity: 1;
+        }
+
+        .nav-menu {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: var(--transition);
+            width: calc(100% - 10px);
+            margin-left: 5px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: white;
+            border-radius: 3px;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            min-width: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-item-text {
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .modern-nav:hover .nav-item-text {
+            opacity: 1;
+        }
+
+        .nav-badge {
+            background: white;
+            color: var(--primary-dark);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: auto;
+            display: none;
+        }
+
+        .modern-nav:hover .nav-badge {
+            display: block;
+        }
+
+        .nav-footer {
+            margin-top: auto;
+            margin-bottom: 30px;
+            width: 100%;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modern-nav:hover .nav-footer {
+            align-items: flex-start;
+            padding-left: 15px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--nav-width);
+            transition: var(--transition);
+        }
+
+        .modern-nav:hover ~ .main-content {
+            margin-left: var(--nav-expanded-width);
+        }
+
+        /* Topbar */
+        .topbar {
+            height: var(--topbar-height);
+            background: var(--bg);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-toggle {
+            font-size: 1.2rem;
+            margin-right: 20px;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .topbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        /* Content Area */
+        .content-wrapper {
+            padding: 30px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+        }
+
+        .welcome-message {
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        /* CV Form */
+        .cv-form {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background: var(--bg);
+            color: var(--text);
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23666666' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .add-item-btn {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            transition: var(--transition);
+        }
+
+        .add-item-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .item-card {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .remove-item {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4444;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+
+        /* Tag Input Styles */
+        .tags-input-container {
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 5px;
+            background: var(--bg);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .tag-item {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .tag-item .close {
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .tags-input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+        }
+
+        .hint-text {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        /* Response Modal */
+        .response-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+        
+        .response-modal.active {
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: var(--bg);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .response-modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        /* White spinner for the button */
+        .btn-primary .fa-spinner {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modern-nav {
+                width: 0;
+                overflow: hidden;
+            }
+            
+            .modern-nav.active {
+                width: var(--nav-expanded-width);
+                z-index: 1000;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .modern-nav.active ~ .main-content {
+                margin-left: 0;
+            }
+            
+            .topbar-right {
+                gap: 10px;
+            }
+
+            .user-name {
+                display: none;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 20px 15px;
+            }
+            
+            .cv-form {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Modern Vertical Navigation -->
+        <nav class="modern-nav" id="modernNav">
+            <div class="nav-logo">
+                <div class="nav-logo-icon">
+                    <i class="fas fa-hands-helping"></i>
+                </div>
+                <span class="nav-logo-text">RecruitFlow</span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="jobseeker.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-item-text">Dashboard</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="nav-item-text">CV Generator</span>
+                    <span class="nav-badge">AI</span>
+                </a>
+                <a href="chatbot.html" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span class="nav-item-text">Career Bot</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-briefcase"></i>
+                    <span class="nav-item-text">Applications</span>
+                    <span class="nav-badge">5</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-bookmark"></i>
+                    <span class="nav-item-text">Saved Jobs</span>
+                    <span class="nav-badge">12</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="nav-item-text">Stats</span>
+                </a>
+            </div>
+            
+            <div class="nav-footer">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span class="nav-item-text">Settings</span>
+                </a>
+                <a href="Index.html" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-item-text">Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Topbar -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <div class="sidebar-toggle" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search jobs, companies...">
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-profile">
+                        <img src="download.jpeg" alt="User" class="user-avatar">
+                        <span class="user-name">Lethabo Z.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-wrapper">
+                <div class="content-header">
+                    <div>
+                        <h1 class="content-title">Submit Your CV</h1>
+                        <p class="welcome-message">Fill in your details and submit your CV for job applications</p>
+                    </div>
+                </div>
+
+                <!-- CV Form -->
+                <div class="cv-form">
+                    <form id="cvForm">
+                        <!-- Personal Information -->
+                        <div class="form-section">
+                            <h3 class="section-title"><i class="fas fa-user"></i> Personal Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="job_id" class="form-label">Job ID *</label>
+                                    <input type="number" id="job_id" class="form-control" value="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="industry_interest" class="form-label">Industry Interest *</label>
+                                    <input type="text" id="industry_interest" class="form-control" value="Software" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="name" class="form-label">Name *</label>
+                                    <input type="text" id="name" class="form-control" value="Lethabo" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="surname" class="form-label">Surname *</label>
+                                    <input type="text" id="surname" class="form-control" value="Zwane" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" id="email" class="form-control" value="ednd@gmail.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cell_number" class="form-label">Cell Number *</label>
+                                    <input type="text" id="cell_number" class="form-control" value="0632337775" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address" class="form-label">Address *</label>
+                                <input type="text" id="address" class="form-control" value="30 Hannes Van Schoor Street" required>
+                            </div>
+                        </div>
+
+                        <!-- Skills & Interests -->
+                        <div class="form-section">
+                            <h3 class="section-title"><i class="fas fa-tools"></i> Skills & Interests</h3>
+                            <div class="form-group">
+                                <label for="interests" class="form-label">Interests *</label>
+                                <div class="tags-input-container" id="interestsContainer">
+                                    <input type="text" id="interestsInput" class="tags-input" placeholder="Type and press enter">
+                                </div>
+                                <p class="hint-text">Separate interests with commas (e.g., coding, AI, hackathons, gaming)</p>
+                                <input type="hidden" id="interests" value="coding, AI, hackathons, gaming">
+                            </div>
+                            <div class="form-group">
+                                <label for="skills" class="form-label">Skills *</label>
+                                <div class="tags-input-container" id="skillsContainer">
+                                    <input type="text" id="skillsInput" class="tags-input" placeholder="Type and press enter">
+                                </div>
+                                <p class="hint-text">Separate skills with commas (e.g., Python, JavaScript, FastAPI, React, SQL)</p>
+                                <input type="hidden" id="skills" value="Python, JavaScript, FastAPI, React, SQL">
+                            </div>
+                        </div>
+
+                        <!-- Projects -->
+                        <div class="form-section">
+                            <h3 class="section-title"><i class="fas fa-project-diagram"></i> Projects</h3>
+                            <div class="form-group">
+                                <label for="projects" class="form-label">Projects *</label>
+                                <textarea id="projects" class="form-control" placeholder="Enter each project on a new line">Built a full-stack web app to predict disease trends using machine learning.
+Developed a portal for students to access academic resources and upload assignments.</textarea>
+                                <p class="hint-text">Enter each project on a new line</p>
+                            </div>
+                        </div>
+
+                        <!-- Experience -->
+                        <div class="form-section">
+                            <h3 class="section-title"><i class="fas fa-briefcase"></i> Experience</h3>
+                            <div id="experienceContainer">
+                                <!-- Experience items will be added here -->
+                            </div>
+                            <button type="button" class="add-item-btn" id="addExperience">
+                                <i class="fas fa-plus"></i> Add Experience
+                            </button>
+                        </div>
+
+                        <!-- Education -->
+                        <div class="form-section">
+                            <h3 class="section-title"><i class="fas fa-graduation-cap"></i> Education</h3>
+                            <div id="educationContainer">
+                                <!-- Education items will be added here -->
+                            </div>
+                            <button type="button" class="add-item-btn" id="addEducation">
+                                <i class="fas fa-plus"></i> Add Education
+                            </button>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" id="resetForm">
+                                <i class="fas fa-trash-alt"></i> Clear Form
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit CV
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Response Modal -->
+    <div class="response-modal" id="responseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>CV Submission Successful</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="responseMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="returnToDashboard">
+                    <i class="fas fa-arrow-left"></i> Return to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates for dynamic elements -->
+    <template id="experienceTemplate">
+        <div class="item-card">
+            <div class="remove-item">&times;</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Company *</label>
+                    <input type="text" class="form-control experience-company" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role *</label>
+                    <input type="text" class="form-control experience-role" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Duration *</label>
+                    <input type="text" class="form-control experience-duration" placeholder="e.g. Jan 2024 - June 2024" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Responsibilities</label>
+                <textarea class="form-control experience-responsibilities" placeholder="Enter each responsibility on a new line"></textarea>
+                <p class="hint-text">Enter each responsibility on a new line</p>
+            </div>
+        </div>
+    </template>
+
+    <template id="educationTemplate">
+        <div class="item-card">
+            <div class="remove-item">&times;</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Institution *</label>
+                    <input type="text" class="form-control education-institution" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Degree *</label>
+                    <input type="text" class="form-control education-degree" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Year *</label>
+                    <input type="text" class="form-control education-year" placeholder="e.g. 2022 - Present" required>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle Modern Navigation for mobile
+            const modernNav = document.getElementById('modernNav');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            sidebarToggle.addEventListener('click', function() {
+                modernNav.classList.toggle('active');
+            });
+            
+            // Toggle Theme
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+
+            // Initialize tag inputs
+            function initTagInput(containerId, inputId, hiddenId, initialValues) {
+                const container = document.getElementById(containerId);
+                const input = document.getElementById(inputId);
+                const hidden = document.getElementById(hiddenId);
+                
+                // Add initial tags
+                initialValues.split(',').forEach(tag => {
+                    const trimmedTag = tag.trim();
+                    if (trimmedTag) {
+                        addTag(container, hidden, trimmedTag);
+                    }
+                });
+                
+                // Handle input
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ',') {
+                        e.preventDefault();
+                        const value = this.value.trim();
+                        if (value) {
+                            addTag(container, hidden, value);
+                            this.value = '';
+                        }
+                    }
+                });
+                
+                // Handle paste
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pasteData = e.clipboardData.getData('text');
+                    const tags = pasteData.split(',').map(tag => tag.trim()).filter(tag => tag);
+                    tags.forEach(tag => {
+                        addTag(container, hidden, tag);
+                    });
+                });
+                
+                // Handle backspace
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '') {
+                        const tags = container.querySelectorAll('.tag-item');
+                        if (tags.length > 0) {
+                            const lastTag = tags[tags.length - 1];
+                            removeTag(container, hidden, lastTag);
+                        }
+                    }
+                });
+                
+                // Focus container when clicked
+                container.addEventListener('click', function() {
+                    input.focus();
+                });
+            }
+            
+            // Add tag function
+            function addTag(container, hidden, value) {
+                const tag = document.createElement('div');
+                tag.className = 'tag-item';
+                tag.innerHTML = `
+                    ${value}
+                    <span class="close">&times;</span>
+                `;
+                
+                const closeBtn = tag.querySelector('.close');
+                closeBtn.addEventListener('click', () => {
+                    removeTag(container, hidden, tag);
+                });
+                
+                container.insertBefore(tag, container.querySelector('.tags-input'));
+                updateHiddenInput(container, hidden);
+            }
+            
+            // Remove tag function
+            function removeTag(container, hidden, tag) {
+                tag.remove();
+                updateHiddenInput(container, hidden);
+            }
+            
+            // Update hidden input with tags
+            function updateHiddenInput(container, hidden) {
+                const tags = Array.from(container.querySelectorAll('.tag-item'))
+                    .map(tag => tag.textContent.replace('×', '').trim());
+                hidden.value = tags.join(', ');
+            }
+            
+            // Initialize tag inputs
+            initTagInput('interestsContainer', 'interestsInput', 'interests', 'coding, AI, hackathons, gaming');
+            initTagInput('skillsContainer', 'skillsInput', 'skills', 'Python, JavaScript, FastAPI, React, SQL');
+            
+            // Dynamic form elements
+            const experienceContainer = document.getElementById('experienceContainer');
+            const educationContainer = document.getElementById('educationContainer');
+            const addExperienceBtn = document.getElementById('addExperience');
+            const addEducationBtn = document.getElementById('addEducation');
+            const experienceTemplate = document.getElementById('experienceTemplate');
+            const educationTemplate = document.getElementById('educationTemplate');
+            
+            // Add experience item
+            addExperienceBtn.addEventListener('click', function() {
+                const clone = experienceTemplate.content.cloneNode(true);
+                experienceContainer.appendChild(clone);
+                setupRemoveButtons();
+            });
+            
+            // Add education item
+            addEducationBtn.addEventListener('click', function() {
+                const clone = educationTemplate.content.cloneNode(true);
+                educationContainer.appendChild(clone);
+                setupRemoveButtons();
+            });
+            
+            // Set up remove buttons
+            function setupRemoveButtons() {
+                document.querySelectorAll('.remove-item').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        this.parentElement.remove();
+                    });
+                });
+            }
+            
+            // Initialize with one empty experience and education
+            addExperienceBtn.click();
+            addEducationBtn.click();
+            
+            // Form submission
+            document.getElementById("cvForm").addEventListener("submit", async function(e) {
+                e.preventDefault();
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                submitBtn.disabled = true;
+
+                // Convert projects textarea to array
+                const projects = document.getElementById("projects").value
+                    .split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line);
+                
+                // Convert experience to array
+                const experience = Array.from(document.querySelectorAll('#experienceContainer .item-card')).map(card => {
+                    return {
+                        company: card.querySelector('.experience-company').value,
+                        role: card.querySelector('.experience-role').value,
+                        duration: card.querySelector('.experience-duration').value,
+                        responsibilities: card.querySelector('.experience-responsibilities').value
+                            .split('\n')
+                            .map(line => line.trim())
+                            .filter(line => line)
+                    };
+                });
+                
+                // Convert education to array
+                const education = Array.from(document.querySelectorAll('#educationContainer .item-card')).map(card => {
+                    return {
+                        institution: card.querySelector('.education-institution').value,
+                        degree: card.querySelector('.education-degree').value,
+                        year: card.querySelector('.education-year').value
+                    };
+                });
+
+                const data = {
+                    job_id: parseInt(document.getElementById("job_id").value),
+                    name: document.getElementById("name").value,
+                    surname: document.getElementById("surname").value,
+                    email: document.getElementById("email").value,
+                    cell_number: document.getElementById("cell_number").value,
+                    address: document.getElementById("address").value,
+                    industry_interest: document.getElementById("industry_interest").value,
+                    interests: document.getElementById("interests").value.split(',').map(item => item.trim()),
+                    skills: document.getElementById("skills").value.split(',').map(item => item.trim()),
+                    projects: projects,
+                    experience: experience,
+                    education: education
+                };
+
+                try {
+                    // Simulate API call (replace with actual fetch in production)
+                    const response = await fetch("http://127.0.0.1:8000/cv/submit", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        // Show the response modal with feedback
+                        const modal = document.getElementById('responseModal');
+                        document.getElementById('responseMessage').textContent = 
+                            "Your CV has been successfully submitted and analyzed.\n\n" + 
+                            "Feedback: " + result.application_feedback.feedback;
+                        
+                        modal.style.display = 'flex';
+                        setTimeout(() => modal.classList.add('active'), 10);
+                    } else {
+                        showAlert("❌ Error: " + JSON.stringify(result), 'error');
+                    }
+                } catch (err) {
+                    showAlert("❌ Something went wrong: " + err.message, 'error');
+                } finally {
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit CV';
+                    submitBtn.disabled = false;
+                }
+            });
+
+            // Handle return to dashboard button
+            document.getElementById('returnToDashboard').addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecting...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    window.location.href = 'jobseeker.html';
+                }, 800);
+            });
+
+            // Close modal handler
+            document.querySelector('.modal-close').addEventListener('click', function() {
+                const modal = document.getElementById('responseModal');
+                modal.classList.remove('active');
+                setTimeout(() => modal.style.display = 'none', 300);
+            });
+            
+            // Reset form
+            document.getElementById('resetForm').addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear the form? All data will be lost.')) {
+                    document.getElementById('cvForm').reset();
+                    experienceContainer.innerHTML = '';
+                    educationContainer.innerHTML = '';
+                    document.getElementById('interestsContainer').innerHTML = 
+                        '<input type="text" id="interestsInput" class="tags-input" placeholder="Type and press enter">';
+                    document.getElementById('skillsContainer').innerHTML = 
+                        '<input type="text" id="skillsInput" class="tags-input" placeholder="Type and press enter">';
+                    document.getElementById('interests').value = '';
+                    document.getElementById('skills').value = '';
+                    addExperienceBtn.click();
+                    addEducationBtn.click();
+                    initTagInput('interestsContainer', 'interestsInput', 'interests', '');
+                    initTagInput('skillsContainer', 'skillsInput', 'skills', '');
+                    showAlert('Form cleared', 'info');
+                }
+            });
+            
+            // Show alert function
+            function showAlert(message, type) {
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.innerHTML = `
+                    <span>${message}</span>
+                    <button class="close-btn">&times;</button>
+                `;
+                
+                alert.style.position = 'fixed';
+                alert.style.bottom = '20px';
+                alert.style.right = '20px';
+                alert.style.padding = '15px 20px';
+                alert.style.background = type === 'error' ? '#ff4444' : type === 'success' ? '#00C851' : '#33b5e5';
+                alert.style.color = 'white';
+                alert.style.borderRadius = '5px';
+                alert.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
+                alert.style.zIndex = '1000';
+                alert.style.display = 'flex';
+                alert.style.alignItems = 'center';
+                alert.style.gap = '15px';
+                alert.style.animation = 'fadeIn 0.3s ease';
+                
+                document.body.appendChild(alert);
+                
+                // Close button
+                alert.querySelector('.close-btn').addEventListener('click', () => {
+                    alert.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => alert.remove(), 300);
+                });
+                
+                // Auto-close
+                setTimeout(() => {
+                    alert.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => alert.remove(), 300);
+                }, 5000);
+            }
+            
+            // Add some CSS for animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: translateY(0); }
+                    to { opacity: 0; transform: translateY(20px); }
+                }
+                .close-btn {
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    padding: 0;
+                    margin-left: 10px;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Responsive adjustments
+            function handleResize() {
+                if (window.innerWidth > 768) {
+                    modernNav.classList.remove('active');
+                }
+            }
+            
+            window.addEventListener('resize', handleResize);
+        });
+    </script>
+</body>
+</html>

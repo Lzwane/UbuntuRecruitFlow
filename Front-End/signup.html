@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Ubuntu RecruitFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --primary-light: #d5f5e3;
+            --text: #333;
+            --text-light: #666;
+            --bg: #ffffff;
+            --card-bg: #f9f9f9;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.05) 0%, rgba(255, 255, 255, 1) 100%);
+        }
+
+        .signup-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .signup-hero {
+            flex: 1;
+            background: url('https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            color: white;
+            position: relative;
+        }
+
+        .signup-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(46, 204, 113, 0.3) 100%);
+        }
+
+        .signup-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+        }
+
+        .signup-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .signup-hero p {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .benefits-list {
+            margin-top: 40px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .signup-form-container {
+            width: 450px;
+            background-color: var(--bg);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background-color: var(--primary-dark);
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 28px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .logo-tagline {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+
+        .form-group i {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            color: var(--text-light);
+        }
+
+        .role-selector {
+            display: flex;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .role-option {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+        }
+
+        .role-option:first-child {
+            border-right: none;
+        }
+
+        .role-option.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .role-option i {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-light);
+        }
+
+        .login-footer a {
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading animation */
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Password strength meter */
+        .password-strength {
+            height: 5px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .strength-meter {
+            height: 100%;
+            width: 0;
+            background-color: #e74c3c;
+            transition: all 0.3s;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .signup-container {
+                flex-direction: column;
+            }
+            
+            .signup-hero {
+                display: none;
+            }
+            
+            .signup-form-container {
+                width: 100%;
+                max-width: 500px;
+                margin: 0 auto;
+                padding: 40px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .logo-text {
+                font-size: 24px;
+            }
+            
+            .role-selector {
+                flex-direction: column;
+            }
+            
+            .role-option:first-child {
+                border-right: 1px solid var(--border);
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-hero">
+            <div class="signup-hero-content">
+                <h1>Join Ubuntu RecruitFlow</h1>
+                <p>Be part of the movement transforming hiring in South Africa. Whether you're seeking talent or opportunities, we've got you covered.</p>
+                
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div>
+                            <h3>Fast Matching</h3>
+                            <p>Our AI connects you with the best matches in minutes</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <h3>Bias-Free</h3>
+                            <p>Technology designed to promote fair hiring practices</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div>
+                            <h3>Instant Feedback</h3>
+                            <p>Get constructive feedback regardless of the outcome</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="signup-form-container">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-hands-helping"></i>
+                </div>
+                <h1 class="logo-text">Ubuntu RecruitFlow</h1>
+                <p class="logo-tagline">Fair hiring, faster. No CV needed.</p>
+            </div>
+
+            <div class="role-selector">
+                <div class="role-option active" data-role="seeker">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Job Seeker</span>
+                </div>
+                <div class="role-option" data-role="employer">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Employer</span>
+                </div>
+            </div>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" placeholder="Enter your full name" required>
+                    <i class="fas fa-user"></i>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="your@email.com" required>
+                    <i class="fas fa-envelope"></i>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                    <i class="fas fa-lock"></i>
+                    <div class="password-strength">
+                        <div class="strength-meter" id="strengthMeter"></div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="companyField" style="display: none;">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" id="companyName" placeholder="Your company name">
+                    <i class="fas fa-building"></i>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="signupBtn">
+                    <span id="btnText">Create Account</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+
+                <div class="login-footer">
+                    <p>Already have an account? <a href="login.html">Log in</a></p>
+                    <p>By signing up, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+    // Role selection
+    const roleOptions = document.querySelectorAll('.role-option');
+    const companyField = document.getElementById('companyField');
+    
+    roleOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            roleOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            
+            if (this.dataset.role === 'employer') {
+                companyField.style.display = 'block';
+            } else {
+                companyField.style.display = 'none';
+            }
+        });
+    });
+
+    // Password strength meter
+    const passwordInput = document.getElementById('password');
+    const strengthMeter = document.getElementById('strengthMeter');
+    
+    passwordInput.addEventListener('input', function() {
+        const strength = calculatePasswordStrength(this.value);
+        updateStrengthMeter(strength);
+    });
+    
+    function calculatePasswordStrength(password) {
+        let strength = 0;
+        
+        // Length check
+        if (password.length > 7) strength += 1;
+        if (password.length > 11) strength += 1;
+        
+        // Character type checks
+        if (/[A-Z]/.test(password)) strength += 1;
+        if (/[0-9]/.test(password)) strength += 1;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+        
+        return Math.min(strength, 5); // Max strength of 5
+    }
+    
+    function updateStrengthMeter(strength) {
+        const colors = ['#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#27ae60'];
+        const width = strength * 20;
+        
+        strengthMeter.style.width = `${width}%`;
+        strengthMeter.style.backgroundColor = colors[strength - 1] || '#e74c3c';
+    }
+
+    // Form submission
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading animation
+        const btnText = document.getElementById('btnText');
+        const loader = document.getElementById('loader');
+        const signupBtn = document.getElementById('signupBtn');
+        
+        btnText.textContent = 'Creating Account...';
+        loader.style.display = 'block';
+        signupBtn.disabled = true;
+        
+        // Simulate signup process (replace with actual signup)
+        setTimeout(() => {
+            // Hide loader and reset button
+            loader.style.display = 'none';
+            btnText.textContent = 'Account Created!';
+            
+            // Redirect to appropriate page based on selected role
+            setTimeout(() => {
+                const activeRole = document.querySelector('.role-option.active').dataset.role;
+                if (activeRole === 'employer') {
+                    window.location.href = 'employer.html';
+                } else {
+                    window.location.href = 'jobseeker.html';
+                }
+            }, 1000);
+        }, 2500);
+    });
+
+    // Add hover effect to form container
+    const formContainer = document.querySelector('.signup-form-container');
+    formContainer.addEventListener('mouseenter', function() {
+        this.style.boxShadow = '-5px 0 25px rgba(46, 204, 113, 0.2)';
+    });
+    
+    formContainer.addEventListener('mouseleave', function() {
+        this.style.boxShadow = '-5px 0 15px rgba(0, 0, 0, 0.05)';
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Guidance Chatbot | Ubuntu RecruitFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --primary-light: #d5f5e3;
+            --text: #333;
+            --text-light: #666;
+            --bg: #ffffff;
+            --card-bg: #f9f9f9;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .chatbot-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .chatbot-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chatbot-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 20px;
+        }
+
+        .chatbot-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+
+        .chatbot-subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .chatbot-messages {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-bot {
+            align-items: flex-start;
+        }
+
+        .message-user {
+            align-items: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 15px;
+            border-radius: 18px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .bot-message {
+            background: var(--primary-light);
+            color: var(--text);
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        .chatbot-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .chatbot-input button {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .chatbot-input button:hover {
+            background: var(--primary-dark);
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .option-btn {
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .career-result {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .career-title {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .career-description {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .career-skills {
+            margin-bottom: 15px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+        }
+
+        .career-jobs {
+            margin-top: 20px;
+        }
+
+        .job-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .job-link:hover {
+            background: var(--primary-dark);
+        }
+
+        .typing-indicator {
+            display: flex;
+            padding: 10px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-light);
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        @media (max-width: 768px) {
+            .chatbot-container {
+                margin: 20px;
+                padding: 15px;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+        }
+            .chatbot-nav {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 10;
+    }
+    
+    .btn-dashboard {
+        padding: 8px 15px 8px 10px;
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: var(--shadow);
+    }
+    
+    .btn-dashboard:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateX(-3px);
+    }
+    
+    .btn-dashboard i {
+        transition: all 0.3s;
+    }
+    
+    .btn-dashboard:hover i {
+        transform: translateX(-3px);
+    }
+    
+    /* Adjust header to accommodate the button */
+    .chatbot-header {
+        padding-top: 50px; /* Create space for the nav button */
+        position: relative;
+    }
+    
+    /* Loading state */
+    .btn-dashboard.loading {
+        pointer-events: none;
+    }
+    
+    .btn-dashboard.loading i {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: translateX(-3px) rotate(0deg); }
+        100% { transform: translateX(-3px) rotate(360deg); }
+    }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <div class="chatbot-nav">
+    <button class="btn-dashboard" id="dashboardBtn">
+        <i class="fas fa-chevron-left"></i> Dashboard
+    </button>
+</div>
+        <div class="chatbot-header">
+            <div class="chatbot-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div>
+                <h2 class="chatbot-title">Career Pathfinder</h2>
+                <p class="chatbot-subtitle">Discover your ideal career based on your skills and interests</p>
+            </div>
+        </div>
+
+        <div class="chatbot-messages" id="chatMessages">
+            <!-- Messages will appear here -->
+        </div>
+
+        <div class="career-result" id="careerResult">
+            <h3 class="career-title" id="careerTitle">Recommended Career Path</h3>
+            <p class="career-description" id="careerDescription"></p>
+            <div class="career-skills">
+                <h4>Key Skills Needed:</h4>
+                <div id="careerSkills"></div>
+            </div>
+            <div class="career-jobs">
+                <h4>Explore Jobs:</h4>
+                <div id="jobLinks"></div>
+            </div>
+        </div>
+
+        <div class="chatbot-input">
+            <input type="text" id="userInput" placeholder="Type your answer here..." disabled>
+            <button id="sendBtn" disabled><i class="fas fa-paper-plane"></i> Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Career data
+        const careerData = {
+            "Software Development": {
+                description: "Software developers design, develop, and test software applications. This field is ideal for problem-solvers who enjoy coding and creating digital solutions.",
+                skills: ["Programming", "Problem Solving", "Algorithms", "Debugging", "Teamwork"],
+                jobs: ["Frontend Developer", "Backend Developer", "Full Stack Developer", "Mobile App Developer"]
+            },
+            "Data Science": {
+                description: "Data scientists analyze and interpret complex data to help organizations make decisions. Perfect for those with strong analytical and statistical skills.",
+                skills: ["Python/R", "Statistics", "Machine Learning", "Data Visualization", "SQL"],
+                jobs: ["Data Analyst", "Machine Learning Engineer", "Data Engineer", "Business Intelligence Analyst"]
+            },
+            "Digital Marketing": {
+                description: "Digital marketers promote products and services through digital channels. Great for creative individuals with strong communication skills.",
+                skills: ["SEO", "Content Creation", "Social Media", "Analytics", "Copywriting"],
+                jobs: ["SEO Specialist", "Social Media Manager", "Content Marketer", "Digital Marketing Manager"]
+            },
+            "UX/UI Design": {
+                description: "UX/UI designers create user-friendly interfaces for digital products. Ideal for those who combine creativity with user empathy.",
+                skills: ["Wireframing", "User Research", "Prototyping", "Visual Design", "Usability Testing"],
+                jobs: ["UX Designer", "UI Designer", "Product Designer", "Interaction Designer"]
+            },
+            "Cybersecurity": {
+                description: "Cybersecurity professionals protect systems from digital attacks. Best for detail-oriented individuals with strong technical skills.",
+                skills: ["Network Security", "Ethical Hacking", "Risk Assessment", "Cryptography", "Incident Response"],
+                jobs: ["Security Analyst", "Penetration Tester", "Security Engineer", "Chief Information Security Officer"]
+            }
+        };
+
+        // Chatbot questions
+        const questions = [
+            {
+                text: "Hi there! I'm Ubuntu CareerBot. Let's find your ideal career path. What's your name?",
+                type: "text",
+                key: "name"
+            },
+            {
+                text: "Nice to meet you, {name}! What areas interest you most?",
+                type: "options",
+                options: ["Technology", "Creative Arts", "Business", "Science", "Helping People"],
+                key: "interests"
+            },
+            {
+                text: "Great! Which of these skills do you have or would like to develop?",
+                type: "options",
+                options: ["Programming", "Design", "Analysis", "Communication", "Problem Solving", "Leadership"],
+                key: "skills"
+            },
+            {
+                text: "Do you prefer working independently or as part of a team?",
+                type: "options",
+                options: ["Independently", "In a team", "A mix of both"],
+                key: "workStyle"
+            },
+            {
+                text: "What kind of work environment do you prefer?",
+                type: "options",
+                options: ["Office", "Remote", "Hybrid", "Outdoors", "Flexible"],
+                key: "environment"
+            },
+            {
+                text: "Are you more interested in technical work or creative work?",
+                type: "options",
+                options: ["Technical", "Creative", "A balance of both"],
+                key: "workType"
+            }
+        ];
+
+        // DOM elements
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const careerResult = document.getElementById('careerResult');
+        const careerTitle = document.getElementById('careerTitle');
+        const careerDescription = document.getElementById('careerDescription');
+        const careerSkills = document.getElementById('careerSkills');
+        const jobLinks = document.getElementById('jobLinks');
+
+        // Chat state
+        let currentQuestion = 0;
+        let answers = {};
+
+        // Initialize chatbot
+        function initChatbot() {
+            displayBotMessage(questions[currentQuestion].text);
+            enableInput();
+        }
+
+        // Display bot message
+        function displayBotMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-bot';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content bot-message';
+            
+            // Check if message contains options
+            if (typeof message === 'object' && message.options) {
+                contentDiv.innerHTML = message.text;
+                
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options-container';
+                
+                message.options.forEach(option => {
+                    const optionBtn = document.createElement('div');
+                    optionBtn.className = 'option-btn';
+                    optionBtn.textContent = option;
+                    optionBtn.addEventListener('click', () => selectOption(option));
+                    optionsDiv.appendChild(optionBtn);
+                });
+                
+                contentDiv.appendChild(optionsDiv);
+            } else {
+                contentDiv.textContent = message;
+            }
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timeDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollTop + 1000;
+        }
+
+        // Display typing indicator
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'typing-dot';
+                typingDiv.appendChild(dot);
+            }
+            
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollTop + 1000;
+            
+            return typingDiv;
+        }
+
+        // Remove typing indicator
+        function hideTyping(typingElement) {
+            typingElement.remove();
+        }
+
+        // Display user message
+        function displayUserMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-user';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content user-message';
+            contentDiv.textContent = message;
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timeDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollTop + 1000;
+        }
+
+        // Select option from buttons
+        function selectOption(option) {
+            displayUserMessage(option);
+            processAnswer(option);
+        }
+
+        // Process user answer
+        function processAnswer(answer) {
+            const currentQ = questions[currentQuestion];
+            answers[currentQ.key] = answer;
+            
+            disableInput();
+            const typing = showTyping();
+            
+            setTimeout(() => {
+                hideTyping(typing);
+                
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    let nextQuestion = questions[currentQuestion].text;
+                    
+                    // Replace placeholders with previous answers
+                    if (nextQuestion.includes('{name}') && answers.name) {
+                        nextQuestion = nextQuestion.replace('{name}', answers.name);
+                    }
+                    
+                    if (questions[currentQuestion].type === 'options') {
+                        displayBotMessage({
+                            text: nextQuestion,
+                            options: questions[currentQuestion].options
+                        });
+                    } else {
+                        displayBotMessage(nextQuestion);
+                    }
+                    
+                    enableInput();
+                } else {
+                    // All questions answered - show recommendation
+                    recommendCareer();
+                }
+            }, 1500);
+        }
+
+        // Recommend career based on answers
+        function recommendCareer() {
+            // Simple recommendation logic - in a real app this would be more sophisticated
+            let recommendedCareer = "Software Development"; // Default
+            
+            if (answers.interests === "Creative Arts" || answers.workType === "Creative") {
+                recommendedCareer = "UX/UI Design";
+            } else if (answers.interests === "Science" || answers.skills === "Analysis") {
+                recommendedCareer = "Data Science";
+            } else if (answers.interests === "Business" || answers.skills === "Communication") {
+                recommendedCareer = "Digital Marketing";
+            } else if (answers.skills === "Problem Solving" && answers.workType === "Technical") {
+                recommendedCareer = "Cybersecurity";
+            }
+            
+            // Display recommendation
+            const career = careerData[recommendedCareer];
+            
+            careerTitle.textContent = recommendedCareer;
+            careerDescription.textContent = career.description;
+            
+            // Add skills
+            careerSkills.innerHTML = '';
+            career.skills.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'skill-tag';
+                skillTag.textContent = skill;
+                careerSkills.appendChild(skillTag);
+            });
+            
+            // Add job links
+            jobLinks.innerHTML = '';
+            career.jobs.forEach(job => {
+                const jobLink = document.createElement('a');
+                jobLink.className = 'job-link';
+                jobLink.href = `jobseeker.html?search=${encodeURIComponent(job)}`;
+                jobLink.textContent = job;
+                jobLink.target = '_blank';
+                jobLinks.appendChild(jobLink);
+            });
+            
+            careerResult.style.display = 'block';
+            
+            // Scroll to result
+            setTimeout(() => {
+                careerResult.scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+            
+            // Final message
+            displayBotMessage(`Based on your answers, I recommend exploring ${recommendedCareer}. I've shown some details above. You can search for specific jobs in this field using the links provided. Would you like to start over?`);
+            
+            // Add restart button
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-container';
+            
+            const restartBtn = document.createElement('div');
+            restartBtn.className = 'option-btn';
+            restartBtn.textContent = 'Start Over';
+            restartBtn.addEventListener('click', restartChat);
+            optionsDiv.appendChild(restartBtn);
+            
+            const messageDiv = document.querySelector('.message-bot:last-child .message-content');
+            messageDiv.appendChild(optionsDiv);
+        }
+
+        // Restart chat
+        function restartChat() {
+            currentQuestion = 0;
+            answers = {};
+            chatMessages.innerHTML = '';
+            careerResult.style.display = 'none';
+            initChatbot();
+        }
+
+        // Enable input
+        function enableInput() {
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+
+        // Disable input
+        function disableInput() {
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+            userInput.value = '';
+        }
+
+        // Send button click handler
+        sendBtn.addEventListener('click', () => {
+            if (userInput.value.trim() !== '') {
+                displayUserMessage(userInput.value);
+                processAnswer(userInput.value);
+            }
+        });
+
+        // Enter key handler
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && userInput.value.trim() !== '') {
+                displayUserMessage(userInput.value);
+                processAnswer(userInput.value);
+            }
+        });
+
+        
+
+        // Start the chatbot
+        initChatbot();
+
+        
+        document.getElementById('dashboardBtn').addEventListener('click', function() {
+            // Add loading animation
+            this.classList.add('loading');
+            this.innerHTML = '<i class="fas fa-spinner"></i> Returning';
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                window.location.href = 'jobseeker.html'; // Change to your dashboard URL
+            }, 800);
+        });
+
+    </script>
+</body>
+</html>
