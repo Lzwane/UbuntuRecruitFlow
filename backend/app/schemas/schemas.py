@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional,Any
 
 class JobInput(BaseModel):
     job_title: str
@@ -37,12 +37,20 @@ class CVCreate(BaseModel):
     job_id: int
     #user_id: int
 
+class CVOut(BaseModel):
+    name: str
+    surname: str
+    skills: List[Any]
+
 class ApplicationOut(BaseModel):
     id: int
     cv_id: int
     job_id: int
     match_score: float
     feedback: str
+    cv: CVOut
+
+
     
     class Config:
         orm_mode = True
