@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional,Any
+from typing import List, Optional,Any,Dict
 
 class JobInput(BaseModel):
     job_title: str
@@ -40,7 +40,14 @@ class CVCreate(BaseModel):
 class CVOut(BaseModel):
     name: str
     surname: str
-    skills: List[Any]
+    skills: List[str]
+    address: str
+    email: str
+    cell_number: str
+    industry_interest: str
+    interests: List[str]
+    experience: List[Dict[str, Any]]
+    education: List[Dict[str, Any]]
 
 class ApplicationOut(BaseModel):
     id: int
