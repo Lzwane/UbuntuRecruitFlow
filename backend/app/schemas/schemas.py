@@ -36,6 +36,13 @@ class CVCreate(BaseModel):
     education: List[dict]
     job_id: int
     #user_id: int
+
+class ApplicationOut(BaseModel):
+    id: int
+    cv_id: int
+    job_id: int
+    match_score: float
+    feedback: str
     
     class Config:
         orm_mode = True
